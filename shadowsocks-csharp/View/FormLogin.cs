@@ -62,7 +62,7 @@ namespace Shadowsocks.View
 
             }catch (System.Net.WebException e)
                 {
-                    //MessageBox.Show("登录失败，因为无法连接到服务器，请检查您的网络连接");
+                    MessageBox.Show("登录失败，因为无法连接到服务器，请检查您的网络连接");
                     string[] result = {"-1","NULL"};
                     return result;
                 }
