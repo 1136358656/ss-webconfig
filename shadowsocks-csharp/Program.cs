@@ -12,7 +12,8 @@ using System.Text;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Security.Cryptography;
-using System.Globalization;  
+using System.Globalization;
+using System.Runtime.InteropServices;
 
 
 
@@ -23,7 +24,6 @@ using System.Globalization;
 namespace Shadowsocks
 {
     
-
     
 
 
@@ -33,6 +33,11 @@ namespace Shadowsocks
         /// 应用程序的主入口点。
         /// </summary>
         //[STAThread]
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern int SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int y, int Width, int Height, int flags);
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern System.IntPtr GetForegroundWindow();
+       
 
         public static string ServerIP = "0.0.0.0";
         public static int Port = 0000;
@@ -221,7 +226,9 @@ namespace Shadowsocks
                     System.Environment.Exit(0);
                     //Application.ApplicationExit();
                 }
-
+                FormLogin login = new FormLogin();
+                login.Show();
+                SetWindowPos(GetForegroundWindow(), -1, 0, 0, 0, 0, 1 | 2);
                 
 
 
