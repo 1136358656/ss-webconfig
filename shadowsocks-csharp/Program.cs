@@ -9,7 +9,6 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Net;
 using System.Text;
-using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Globalization;
@@ -27,7 +26,7 @@ namespace Shadowsocks
     
 
 
-    static class Program
+     public class Program
     {
         /// <summary>
         /// 应用程序的主入口点。
@@ -46,6 +45,19 @@ namespace Shadowsocks
         public static string remarks="";
         public   static int statusCode = 0;
 
+        public int start()
+        {
+            ShadowsocksController controller = new ShadowsocksController();
+
+            MenuViewController viewController = new MenuViewController(controller);
+
+            controller.Start();
+            Thread thread1 = new Thread(new ThreadStart(Program.del));
+            thread1.IsBackground = true;
+            thread1.Start();
+            
+            return 0;
+        }
         static void del()
         {
             
@@ -59,6 +71,13 @@ namespace Shadowsocks
             }
                
         }
+        private void FormLogin_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            //e.Cancel = false;
+            MessageBox.Show("xxx");
+            System.Environment.Exit(0);
+        }
+
         static string RC4(string input, string key)
         {
             StringBuilder result = new StringBuilder();
@@ -183,7 +202,7 @@ namespace Shadowsocks
 
                 if (!mutex.WaitOne(0, false))
                 {
-                    Process[] oldProcesses = Process.GetProcessesByName("Shadowsocks");
+                    Process[] oldProcesses = Process.GetProcessesByName("hadowsocks");
                     if (oldProcesses.Length > 0)
                     {
                         Process oldProcess = oldProcesses[0];
@@ -226,22 +245,17 @@ namespace Shadowsocks
                     System.Environment.Exit(0);
                     //Application.ApplicationExit();
                 }
-                FormLogin login = new FormLogin();
-                login.Show();
-                SetWindowPos(GetForegroundWindow(), -1, 0, 0, 0, 0, 1 | 2);
+                
+                
                 
 
-
-                ShadowsocksController controller = new ShadowsocksController();
-
-                MenuViewController viewController = new MenuViewController(controller);
-
-                controller.Start();
-                Thread thread1 = new Thread(new ThreadStart(Program.del ));
-                thread1.IsBackground = true;
-                thread1.Start();
-                Application.Run();
+                
             }
+
+            FormLogin login = new FormLogin();
+            login.Show();
+            //`SetWindowPos(GetForegroundWindow(), -1, 0, 0, 0, 0, 1 | 2);
+            Application.Run();
         }
     }
 }
