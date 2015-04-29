@@ -1,4 +1,7 @@
 ﻿using System.Windows.Forms;
+
+
+
 namespace Shadowsocks.View
 {
     partial class FormLogin
@@ -21,7 +24,9 @@ namespace Shadowsocks.View
             
             
             base.Dispose(disposing);
-            System.Environment.Exit(0);
+           // System.Environment.Exit(0);
+            //System.Diagnostics.Process.GetCurrentProcess().Kill();
+
         }
 
         #region Windows Form Designer generated code
@@ -117,6 +122,7 @@ namespace Shadowsocks.View
             this.checkBox1.TabIndex = 7;
             this.checkBox1.Text = "记住账号";
             this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // checkBox2
             // 
@@ -127,6 +133,7 @@ namespace Shadowsocks.View
             this.checkBox2.TabIndex = 8;
             this.checkBox2.Text = "记住密码";
             this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
             // FormLogin
             // 
@@ -149,6 +156,7 @@ namespace Shadowsocks.View
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "登录 - Synapse for Hasi";
             this.TopMost = true;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormLogin_FormClosing);
             this.Load += new System.EventHandler(this.FormLogin_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
