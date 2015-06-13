@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using ZXing;
 using ZXing.Common;
 using ZXing.QrCode;
+using Microsoft.Win32;
+using System.Runtime.InteropServices;
 
 namespace Shadowsocks.View
 {
@@ -20,7 +22,20 @@ namespace Shadowsocks.View
         // and it should just do anything related to the config form
         
         private ShadowsocksController controller;
-        
+
+        [DllImport(@"wininet",
+        SetLastError = true,
+        CharSet = CharSet.Auto,
+        EntryPoint = "InternetSetOption",
+        CallingConvention = CallingConvention.StdCall)]
+
+        public static extern bool InternetSetOption
+        (
+        int hInternet,
+        int dmOption,
+        IntPtr lpBuffer,
+        int dwBufferLength
+        );
 
         private NotifyIcon _notifyIcon;
         private ContextMenu contextMenu1;
@@ -295,6 +310,15 @@ namespace Shadowsocks.View
 
         private void Quit_Click(object sender, EventArgs e)
         {
+            //此处向下开始在关闭时关闭IE代理设置，以免下次启动失败
+            RegistryKey regKey = Registry.CurrentUser;
+            string SubKeyPath = @"Software/Microsoft/Windows/CurrentVersion/Internet Settings";
+            RegistryKey optionKey = regKey.OpenSubKey(SubKeyPath, true);
+            optionKey.SetValue("ProxyEnable", 1);
+            optionKey.SetValue("ProxyServer", "");
+            InternetSetOption(0, 39, IntPtr.Zero, 0); //激活代理设置
+            InternetSetOption(0, 37, IntPtr.Zero, 0);
+            //此处向上在关闭时关闭IE代理设置，以免下次启动失败
             controller.Stop();
             _notifyIcon.Visible = false;
             Application.Exit();

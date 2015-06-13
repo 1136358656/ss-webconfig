@@ -108,7 +108,7 @@ namespace Shadowsocks.View
 
         private void FormLogin_Load(object sender, EventArgs e)
         {
-            config newConfig = new config();
+            //config newConfig = new config();
             string configJson;
             string path = Application.StartupPath + "\\config.json";
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
@@ -119,6 +119,7 @@ namespace Shadowsocks.View
                 newConfig.passwd = "";
                 newConfig.username = "";
                 configJson = JsonConvert.SerializeObject(newConfig);
+                MessageBox.Show(configJson);
                 using (StreamWriter sw = File.CreateText(Application.StartupPath + "\\config.json"))
                 {
                     sw.WriteLine(configJson);
@@ -221,6 +222,7 @@ namespace Shadowsocks.View
 
         private void FormLogin_FormClosing(object sender, FormClosingEventArgs e)
         {
+            //MessageBox.Show("test!");
             if (!File.Exists(path))
             {
                 newConfig.rememberUsername = "0";
@@ -229,6 +231,7 @@ namespace Shadowsocks.View
                 newConfig.username = "";
             }
             configJson = JsonConvert.SerializeObject(newConfig);
+            MessageBox.Show(configJson);
             using (StreamWriter sw = File.CreateText(Application.StartupPath + "\\config.json"))
             {
                 sw.WriteLine(configJson);
