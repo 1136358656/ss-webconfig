@@ -312,7 +312,7 @@ namespace Shadowsocks.View
         {
             //此处向下开始在关闭时关闭IE代理设置，以免下次启动失败
             RegistryKey regKey = Registry.CurrentUser;
-            string SubKeyPath = @"Software/Microsoft/Windows/CurrentVersion/Internet Settings";
+            string SubKeyPath = "Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings";
             RegistryKey optionKey = regKey.OpenSubKey(SubKeyPath, true);
             optionKey.SetValue("ProxyEnable", 1);
             optionKey.SetValue("ProxyServer", "");

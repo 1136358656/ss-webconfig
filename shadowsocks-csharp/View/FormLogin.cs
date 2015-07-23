@@ -62,7 +62,6 @@ namespace Shadowsocks.View
             byte[] tempData;
             tempData = Encoding.ASCII.GetBytes(hash);
             hash = System.Convert.ToBase64String(tempData);
-            
             WebClient authority = new WebClient();
             authority.Credentials = CredentialCache.DefaultCredentials;
             authority.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
@@ -78,11 +77,13 @@ namespace Shadowsocks.View
                     string authJson = System.Text.Encoding.Default.GetString(System.Convert.FromBase64String(response));
                     AuthInfo auth = JsonConvert.DeserializeObject<AuthInfo>(authJson);
                     string[] result = { auth.status, auth.username };
+                    //MessageBox.Show("breakpoint1");
                     return result;
                 }
                 catch
                 {
                     string[] result = { "2", "NULL" };
+                    //MessageBox.Show("breakpoint2");
                     return result;
                 }
                 
@@ -118,8 +119,9 @@ namespace Shadowsocks.View
                 newConfig.rememberPasswd = "0";
                 newConfig.passwd = "";
                 newConfig.username = "";
+                newConfig.noticed = "0";
                 configJson = JsonConvert.SerializeObject(newConfig);
-                MessageBox.Show(configJson);
+                //MessageBox.Show(configJson);
                 using (StreamWriter sw = File.CreateText(Application.StartupPath + "\\config.json"))
                 {
                     sw.WriteLine(configJson);
@@ -134,6 +136,12 @@ namespace Shadowsocks.View
             newConfig = JsonConvert.DeserializeObject<config>(configJson);
             string user = System.Text.Encoding.Default.GetString(System.Convert.FromBase64String(newConfig.username));
             password = System.Text.Encoding.Default.GetString(System.Convert.FromBase64String(newConfig.passwd));
+            fs.Close();
+            if (newConfig.noticed == "0")
+            {
+                Form notice = new Notice();
+                notice.ShowDialog();
+            }
             if(newConfig.rememberUsername == "0")
             {
                 checkBox1.Checked = false;
@@ -151,7 +159,7 @@ namespace Shadowsocks.View
                 checkBox2.Checked = true;
                 passwd.Text = "########";
             }
-            fs.Close();
+            
 
 
         }
@@ -231,7 +239,7 @@ namespace Shadowsocks.View
                 newConfig.username = "";
             }
             configJson = JsonConvert.SerializeObject(newConfig);
-            MessageBox.Show(configJson);
+            //MessageBox.Show(configJson);
             using (StreamWriter sw = File.CreateText(Application.StartupPath + "\\config.json"))
             {
                 sw.WriteLine(configJson);
@@ -290,6 +298,7 @@ namespace Shadowsocks.View
         public string rememberPasswd;
         public string username;
         public string passwd;
+        public string noticed;
 
     }
    

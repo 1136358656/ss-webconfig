@@ -117,20 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label2.Text" xml:space="preserve">
-    <value>请在右下角托盘图标处右击选择“启用系统代理”
-以使用本代理
-取消选择“启用系统代理”
-并选择“退出”可不再使用本代理
-
-如果希望国内网站直连而被墙网站走代理，请选择“PAC模式”
-PAC模式好处是国内网站访问速度不受影响
-如果希望所有流量全部走代理，则可以选择“全局模式”
-
-如果有应用需要单独设置代理，参数如下：
-
-IP:127.0.0.1
-端口:1080
-代理类型:socks5</value>
-  </data>
 </root>
