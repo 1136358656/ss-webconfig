@@ -44,7 +44,8 @@ namespace Shadowsocks
         public static string method = "test";
         public static string remarks="";
         public   static int statusCode = 0;
-
+        public static string version = "0.9.7";
+        public static string macAddress = "";
         public int start()
         {
             ShadowsocksController controller = new ShadowsocksController();
@@ -79,8 +80,7 @@ namespace Shadowsocks
         {
             
             //MessageBox.Show(pageHtml);
-            string version = "0.9.5";
-            string macAddress = "";
+            
             //int statusCode = 0;
             try
             {
@@ -179,47 +179,28 @@ namespace Shadowsocks
 #if !DEBUG
                 Logging.OpenLogFile();
 #endif
-                WebClient web1 = new WebClient();
-                web1.Credentials = CredentialCache.DefaultCredentials;
-                web1.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-                string par = "ver=" + version + "&mac=" + macAddress;
-                //MessageBox.Show(par);
-                byte[] postData = Encoding.UTF8.GetBytes(par);
-                string url = "https://fuckgfw.yanlei.me/hasi-get-config.php";
-                try
+                string NewtonsoftDllPath = Application.StartupPath + "\\Newtonsoft.Json.dll";
+                if (!File.Exists(NewtonsoftDllPath))
                 {
-                    //string key = "e537bfa04fef8b9e6b29e66a61620ef6";
-                    byte[] responseData = web1.UploadData(url, "POST", postData);
-                    string response =Encoding.UTF8.GetString(responseData);
-                    string configJson = System.Text.Encoding.Default.GetString(System.Convert.FromBase64String(response));
-                    //MessageBox.Show(configJson);//得到返回字符流  
-                    
-                    //MessageBox.Show(orgStr);
-                    
-                    if (!File.Exists(Application.StartupPath + "\\gui-config.json"))
-                    {
-                        using (StreamWriter sw = File.CreateText(Application.StartupPath + "\\gui-config.json"))
-                        {
-                            sw.WriteLine(configJson);
-                        }
-                    }
+                    string DllUrl = "https://fuckgfw.yanlei.me/download/Newtonsoft.Json.dll";
+                    WebClient DllClient = new WebClient();
+                    DllClient.Credentials = CredentialCache.DefaultCredentials;
+                    //Byte[] Data = updateUrl.DownloadData(DllUrl);
+                    DllClient.DownloadFile(new Uri(DllUrl), NewtonsoftDllPath);
+
                 }
-                catch (System.Net.WebException e)
-                {
-                    MessageBox.Show("无法获取服务器配置，请检查您的网络连接！");
-                    System.Environment.Exit(0);
-                    //Application.ApplicationExit();
-                }
+                FormLogin login = new FormLogin();
+                login.Show();
+                SetWindowPos(GetForegroundWindow(), -1, 0, 0, 0, 0, 1 | 2);
+               
                 
                 
                 
 
                 
             }
-
-            FormLogin login = new FormLogin();
-            login.Show();
-            SetWindowPos(GetForegroundWindow(), -1, 0, 0, 0, 0, 1 | 2);
+            //MessageBox.Show("Here is normal");
+            
             Application.Run();
         }
     }

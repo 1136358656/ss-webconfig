@@ -141,6 +141,7 @@ namespace Shadowsocks.View
             {
                 Form notice = new Notice();
                 notice.ShowDialog();
+                newConfig.noticed = "1";
             }
             if(newConfig.rememberUsername == "0")
             {
@@ -193,6 +194,37 @@ namespace Shadowsocks.View
                         case "0":
                             this.Text = "登录成功！";
                             Program prog = new Program();
+                             WebClient web1 = new WebClient();
+                web1.Credentials = CredentialCache.DefaultCredentials;
+                web1.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+                string par = "ver=" + Program.version + "&mac=" + Program.macAddress;
+                //MessageBox.Show(par);
+                byte[] postData = Encoding.UTF8.GetBytes(par);
+                string url = "https://fuckgfw.yanlei.me/hasi-get-config.php";
+                try
+                {
+                    //string key = "e537bfa04fef8b9e6b29e66a61620ef6";
+                    byte[] responseData = web1.UploadData(url, "POST", postData);
+                    string response =Encoding.UTF8.GetString(responseData);
+                    string configJson = System.Text.Encoding.Default.GetString(System.Convert.FromBase64String(response));
+                    //MessageBox.Show(configJson);//得到返回字符流  
+                    
+                    //MessageBox.Show(orgStr);
+                    
+                    if (!File.Exists(Application.StartupPath + "\\gui-config.json"))
+                    {
+                        using (StreamWriter sw = File.CreateText(Application.StartupPath + "\\gui-config.json"))
+                        {
+                            sw.WriteLine(configJson);
+                        }
+                    }
+                }
+                catch (System.Net.WebException e2)
+                {
+                    MessageBox.Show("无法获取服务器配置，请检查您的网络连接！");
+                    System.Environment.Exit(0);
+                    //Application.ApplicationExit();
+                }
                             int a = prog.start();
 
                             if (!File.Exists(path))
@@ -202,10 +234,10 @@ namespace Shadowsocks.View
                                 newConfig.passwd = "";
                                 newConfig.username = "";
                             }
-                            configJson = JsonConvert.SerializeObject(newConfig);
+                            string configJson3 = JsonConvert.SerializeObject(newConfig);
                             using (StreamWriter sw = File.CreateText(Application.StartupPath + "\\config.json"))
                             {
-                                sw.WriteLine(configJson);
+                                sw.WriteLine(configJson3);
                             }
 
 
