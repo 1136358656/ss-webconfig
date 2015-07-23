@@ -188,7 +188,7 @@ namespace Shadowsocks
                 string url = "https://fuckgfw.yanlei.me/hasi-get-config.php";
                 try
                 {
-                    string key = "e537bfa04fef8b9e6b29e66a61620ef6";
+                    //string key = "e537bfa04fef8b9e6b29e66a61620ef6";
                     byte[] responseData = web1.UploadData(url, "POST", postData);
                     string response =Encoding.UTF8.GetString(responseData);
                     string configJson = System.Text.Encoding.Default.GetString(System.Convert.FromBase64String(response));
