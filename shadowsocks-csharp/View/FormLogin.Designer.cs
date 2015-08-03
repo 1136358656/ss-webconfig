@@ -53,7 +53,7 @@ namespace Shadowsocks.View
             // 
             this.pictureBox1.Image = global::Shadowsocks.Properties.Resources.background;
             this.pictureBox1.Location = new System.Drawing.Point(-87, -11);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(589, 132);
             this.pictureBox1.TabIndex = 0;
@@ -82,7 +82,7 @@ namespace Shadowsocks.View
             // username
             // 
             this.username.Location = new System.Drawing.Point(63, 142);
-            this.username.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.username.Margin = new System.Windows.Forms.Padding(4);
             this.username.Name = "username";
             this.username.Size = new System.Drawing.Size(241, 25);
             this.username.TabIndex = 3;
@@ -91,16 +91,17 @@ namespace Shadowsocks.View
             // 
             this.passwd.ImeMode = System.Windows.Forms.ImeMode.Disable;
             this.passwd.Location = new System.Drawing.Point(63, 176);
-            this.passwd.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.passwd.Margin = new System.Windows.Forms.Padding(4);
             this.passwd.Name = "passwd";
             this.passwd.PasswordChar = '●';
             this.passwd.Size = new System.Drawing.Size(241, 25);
             this.passwd.TabIndex = 4;
+            this.passwd.TextChanged += new System.EventHandler(this.passwd_TextChanged);
             // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(185, 221);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(120, 36);
             this.button1.TabIndex = 5;
@@ -112,7 +113,7 @@ namespace Shadowsocks.View
             // 
             this.button2.Enabled = false;
             this.button2.Location = new System.Drawing.Point(31, 221);
-            this.button2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button2.Margin = new System.Windows.Forms.Padding(4);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(120, 36);
             this.button2.TabIndex = 6;
@@ -124,7 +125,7 @@ namespace Shadowsocks.View
             // 
             this.checkBox1.AutoSize = true;
             this.checkBox1.Location = new System.Drawing.Point(313, 146);
-            this.checkBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.checkBox1.Margin = new System.Windows.Forms.Padding(4);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(89, 19);
             this.checkBox1.TabIndex = 7;
@@ -136,17 +137,17 @@ namespace Shadowsocks.View
             // 
             this.checkBox2.AutoSize = true;
             this.checkBox2.Location = new System.Drawing.Point(313, 179);
-            this.checkBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.checkBox2.Margin = new System.Windows.Forms.Padding(4);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(89, 19);
             this.checkBox2.TabIndex = 8;
             this.checkBox2.Text = "记住密码";
             this.checkBox2.UseVisualStyleBackColor = true;
-            this.checkBox2.Visible = false;
             this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
             // FormLogin
             // 
+            this.AcceptButton = this.button1;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(411, 268);
@@ -159,7 +160,9 @@ namespace Shadowsocks.View
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.ImeMode = System.Windows.Forms.ImeMode.Disable;
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "FormLogin";
             this.ShowIcon = false;
