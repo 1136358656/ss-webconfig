@@ -18,10 +18,7 @@ namespace Shadowsocks.View
     public partial class FormLogin : Form
     {
         
-        Config newConfig = new Config();
-        string configJson;
-        bool passwordTyped = false;
-        bool usernameTyped = false;
+        UserAccount User = new UserAccount();
         string path = Application.StartupPath + "\\config.json";
 
         public FormLogin()
@@ -31,42 +28,37 @@ namespace Shadowsocks.View
 
         private void FormLogin_Load(object sender, EventArgs e)
         {
-            //config newConfig = new config();
-            string configJson;
-            
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            User.LoadConfig(path);
             
-            string user = System.Text.Encoding.Default.GetString(System.Convert.FromBase64String(newConfig.username));
-            password = newConfig.passwd;
-            fs.Close();
-            if (newConfig.noticed == "0")
+            if (User.UserConfig.noticed == "0")
             {
                 Form notice = new Notice();
                 notice.ShowDialog();
-                newConfig.noticed = "1";
+                User.UserConfig.noticed = "1";
             }
-            if(newConfig.rememberUsername == "0")
+            if (User.UserConfig.rememberUsername == "0")
             {
                 checkBox1.Checked = false;
             }
-            else { username.Text = user;
-            checkBox1.Checked = true;
+            else
+            {
+                username.Text =Encoding.ASCII.GetString(System.Convert.FromBase64String(User.UserConfig.username));
+                checkBox1.Checked = true;
             }
-            if (newConfig.rememberPasswd == "0")
+            
+            if (User.UserConfig.rememberPasswd == "0")
             {
                 checkBox2.Checked = false;
-                rememberPasswd = false;
             }
             else
             {
+                
+                passwd.Text = "UseSavedPasswd!";
                 checkBox2.Checked = true;
-                passwd.Text = "########";
-                passwordTyped = false;
-                rememberPasswd = true;
+                
             }
             
-
-
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -89,91 +81,32 @@ namespace Shadowsocks.View
                 }
                 else
                 {
-                    if (rememberPasswd == false)
-                    {
-                        password = passwd.Text;
-                        auth = login(username.Text, password, false);
-                    }
-                    else
-                    {
-                        if (passwordTyped == true)
-                        {
-                            password = passwd.Text;
-                            auth = login(username.Text, password, false);
-                        }
-                        else
-                        {
-                            password = newConfig.passwd;
-                            MessageBox.Show(password);
-                            auth = login(username.Text, password, true);
-                        }
-                        
-                    }
-                    //MessageBox.Show(password);
+                    byte[] tempData;
+                    tempData = Encoding.ASCII.GetBytes(username.Text);
                     
+                    User.UserConfig.username = System.Convert.ToBase64String(tempData);
+                    if (passwd.Text != "UseSavedPasswd!")
+                    {
+                        MD5 md5Hash = MD5.Create();
+                        tempData = Encoding.ASCII.GetBytes(passwd.Text);
+                        User.UserConfig.passwd = User.GetMd5Hash(md5Hash, System.Convert.ToBase64String(tempData));
+                    }
                     
-                    switch (auth[0])
+                    User.login(User.UserConfig.username, User.UserConfig.passwd);
+                    ServerConfig ServerCfg = new ServerConfig();
+                    switch (User.UserStatus.status)
                     {
                         case "0":
                             this.Text = "登录成功！";
                             Program prog = new Program();
-                            WebClient web1 = new WebClient();
-                            web1.Credentials = CredentialCache.DefaultCredentials;
-                            web1.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-                            string par = "ver=" + Program.version + "&mac=" + Program.macAddress;
-                            //MessageBox.Show(par);
-                            byte[] postData = Encoding.UTF8.GetBytes(par);
-                            string url = "https://fuckgfw.yanlei.me/hasi-get-config.php";
-                            try
+                            bool ConfigResult = ServerCfg.Get(Application.StartupPath + "\\gui-config.json", Program.version, Program.macAddress);
+                            if (ConfigResult == false)
                             {
-                                //string key = "e537bfa04fef8b9e6b29e66a61620ef6";
-                                byte[] responseData = web1.UploadData(url, "POST", postData);
-                                string response =Encoding.UTF8.GetString(responseData);
-                                string configJson = System.Text.Encoding.Default.GetString(System.Convert.FromBase64String(response));
-                    
-                                if (!File.Exists(Application.StartupPath + "\\gui-config.json"))
-                                {
-                                    using (StreamWriter sw = File.CreateText(Application.StartupPath + "\\gui-config.json"))
-                                        {
-                                            sw.WriteLine(configJson);
-                                            }
-                                }
+                                MessageBox.Show("无法连接服务器获取配置，请检查您的网络连接！\r\n1、网络连接是否正常\r\n2、DNS设置是否正常\r\n3、IE代理是否正常(请取消一切代理选项)");
+                                Environment.Exit(0);
                             }
-                            catch (System.Net.WebException e2)
-                            {
-                                MessageBox.Show("无法获取服务器配置，请检查您的网络连接！");
-                                System.Environment.Exit(0);
-                    
-                             }
                             int a = prog.start();
-
-                            //MessageBox.Show("test!");
-                            if (!File.Exists(path))
-                            {
-                                newConfig.rememberUsername = "0";
-                                newConfig.rememberPasswd = "0";
-                                newConfig.passwd = "";
-                                newConfig.username = "";
-                            }
-                            byte[] usernameData2;
-                            usernameData2 = Encoding.ASCII.GetBytes(username.Text);
-                            newConfig.username = System.Convert.ToBase64String(usernameData2);
-                            if (passwordTyped == true && rememberPasswd == true)
-                            {
-                                byte[] passwdData;
-                                MD5 md5Hash = MD5.Create();
-                                passwdData = Encoding.ASCII.GetBytes(passwd.Text);
-                                newConfig.passwd = GetMd5Hash(md5Hash, System.Convert.ToBase64String(passwdData));
-                            }
-                            string configJson2 = JsonConvert.SerializeObject(newConfig);
-                            //MessageBox.Show(configJson);
-                            using (StreamWriter sw = File.CreateText(Application.StartupPath + "\\config.json"))
-                            {
-                                sw.WriteLine(configJson2);
-                            }
-
-
-
+                            User.UserConfig.SaveConfig();
                             this.Hide();
                             break;
                         case "1":
@@ -194,30 +127,7 @@ namespace Shadowsocks.View
 
         private void FormLogin_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //MessageBox.Show("test!");
-            if (!File.Exists(path))
-            {
-                newConfig.rememberUsername = "0";
-                newConfig.rememberPasswd = "0";
-                newConfig.passwd = "";
-                newConfig.username = "";
-            }
-            byte[] usernameData2;
-            usernameData2 = Encoding.ASCII.GetBytes(username.Text);
-            newConfig.username = System.Convert.ToBase64String(usernameData2);
-            if (passwordTyped == true && rememberPasswd == true)
-            {
-                byte[] passwdData;
-                MD5 md5Hash = MD5.Create();
-                passwdData = Encoding.ASCII.GetBytes(passwd.Text);
-                newConfig.passwd = GetMd5Hash(md5Hash, System.Convert.ToBase64String(passwdData));
-            }
-            configJson = JsonConvert.SerializeObject(newConfig);
-            //MessageBox.Show(configJson);
-            using (StreamWriter sw = File.CreateText(Application.StartupPath + "\\config.json"))
-            {
-                sw.WriteLine(configJson);
-            }
+            
             System.Environment.Exit(0);
         }
 
@@ -225,56 +135,52 @@ namespace Shadowsocks.View
         {
             if (checkBox1.Checked == false)
             {
-                newConfig.rememberUsername = "0";
-                newConfig.username ="";
+                User.UserConfig.rememberUsername = "0";
+                User.UserConfig.username = "";
             }
             else
             {
                 if (checkBox1.Checked == true)
                 {
-                    newConfig.rememberUsername = "1";
+                    User.UserConfig.rememberUsername = "1";
                     byte[] usernameData;
                     usernameData = Encoding.ASCII.GetBytes(username.Text);
-                    newConfig.username = System.Convert.ToBase64String(usernameData);
+                    User.UserConfig.username = System.Convert.ToBase64String(usernameData);
                 }
             }
         }
 
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
-            MessageBox.Show(newConfig.passwd);
             if (checkBox2.Checked == false)
             {
-                newConfig.rememberPasswd = "0";
-                newConfig.passwd = "";
-                rememberPasswd = false;
+                User.UserConfig.rememberPasswd = "0";
+                User.UserConfig.passwd = "";
             }
             else
             {
                 if (checkBox2.Checked == true)
                 {
-                    if (passwordTyped == true)
+                    checkBox1.Checked = true;
+                    byte[] passwdData;
+                    User.UserConfig.rememberPasswd = "1";
+                    MD5 md5Hash = MD5.Create();
+                    if (passwd.Text == "UseSavedPasswd!")
                     {
-                        rememberPasswd = false;
+
                     }
                     else
                     {
-                        rememberPasswd = true;
-                    }
-                    byte[] passwdData;
-                    newConfig.rememberPasswd = "1";
-                    MD5 md5Hash = MD5.Create();
-                    newConfig.rememberUsername = "1";
-                    passwdData = Encoding.ASCII.GetBytes(passwd.Text);
-                    newConfig.passwd = GetMd5Hash(md5Hash, System.Convert.ToBase64String(passwdData));
-                    
+                        passwdData = Encoding.ASCII.GetBytes(passwd.Text);
+                        User.UserConfig.passwd = User.GetMd5Hash(md5Hash, System.Convert.ToBase64String(passwdData));
+                    } 
                 }
             }
         }
 
         private void passwd_TextChanged(object sender, EventArgs e)
         {
-            passwordTyped = true;
+
         }
     }
     

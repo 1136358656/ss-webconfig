@@ -42,37 +42,15 @@ namespace Shadowsocks.Model
 
         public static Configuration Load()
         {
-            /*
-            string PageUrl = "https://jelly.yanlei.me/ssconfig.php?ip=104.131.64.202&port=6666&passwd=kaguya&method=rc4-md5";
-            WebClient wc = new WebClient();
-            wc.Credentials = CredentialCache.DefaultCredentials;
-            Encoding enc = Encoding.GetEncoding("utf-8");
-            Byte[] pageData = wc.DownloadData(PageUrl);
-            string ssconfig = enc.GetString(pageData);
-            */
             try
             {
                 string configContent =  File.ReadAllText(CONFIG_FILE);
                 Configuration config = SimpleJson.SimpleJson.DeserializeObject<Configuration>(configContent, new JsonSerializerStrategy());
-                
                 config.isDefault = false;
-                /*
-                config.configs[0].method = Program.method;
-                config.configs[0].password = Program.password;
-                config.configs[0].server_port = Program.Port;
-                config.configs[0].server = Program.ServerIP;
-                config.configs[0].remarks = "";
-                config.index = 0;
-                config.shareOverLan = false;
-                config.global = false;
-                config.enabled = false;
-                config.localPort = 1090;
-                */
                 if (config.localPort == 0)
                 {
                     config.localPort = 1080;
                 }
-                //MessageBox.Show("ssss");
                 
                 return config;
             }
@@ -95,8 +73,6 @@ namespace Shadowsocks.Model
                 };
                 
             }
-           
-            
         }
 
         public static void Save(Configuration config)

@@ -11,9 +11,9 @@ namespace Shadowsocks.Util
 {
     class UserAccount
     {
-        Config UserConfig = new Config();
-        AuthInfo UserStatus = new AuthInfo();
-        static string GetMd5Hash(MD5 md5Hash, string input)
+        public Config UserConfig = new Config();
+        public AuthInfo UserStatus = new AuthInfo();
+        public string GetMd5Hash(MD5 md5Hash, string input)
         {
 
             // Convert the input string to a byte array and compute the hash.
@@ -33,13 +33,8 @@ namespace Shadowsocks.Util
             // Return the hexadecimal string.
             return sBuilder.ToString();
         }
-        bool login(string username, string hash)
+        public void login(string username, string hash)//username为用户名base64,hash为密码base64以后再md5
         {
-            byte[] usernameData;
-            usernameData = Encoding.ASCII.GetBytes(username);
-            username = System.Convert.ToBase64String(usernameData);
-            byte[] passwdData;
-            MD5 md5Hash = MD5.Create();
             byte[] tempData;
             tempData = Encoding.ASCII.GetBytes(hash);
             hash = System.Convert.ToBase64String(tempData);
@@ -57,11 +52,11 @@ namespace Shadowsocks.Util
                 {
                     string authJson = System.Text.Encoding.Default.GetString(System.Convert.FromBase64String(response));
                     UserStatus = JsonConvert.DeserializeObject<AuthInfo>(authJson);
-                    return true;
+                    
                 }
                 catch
                 {
-                    return false;
+                    throw;
                 }
 
 
@@ -74,6 +69,10 @@ namespace Shadowsocks.Util
 
 
 
+        }
+        public void LoadConfig(string ConfigFile)
+        {
+            UserConfig.Load(ConfigFile);
         }
     }
     class AuthInfo
@@ -88,8 +87,10 @@ namespace Shadowsocks.Util
         public string username = "";
         public string passwd = "";
         public string noticed = "";
-        public Config(string ConfigFile)
+        private string ConfigFile = "";
+        public void Load(string ConfigFile)
         {
+            this.ConfigFile = ConfigFile;
             if (!File.Exists(ConfigFile))
             {
                 this.rememberUsername = "0";
@@ -109,8 +110,61 @@ namespace Shadowsocks.Util
             fs.Read(configData, 0, configData.Length);
             UTF8Encoding temp = new UTF8Encoding(true);
             string configJson2 = temp.GetString(configData);
-            this = JsonConvert.DeserializeObject<Config>(configJson2);
+            TempConfig temp1 = JsonConvert.DeserializeObject<TempConfig>(configJson2);
+            this.passwd = temp1.passwd;
+            this.noticed = temp1.noticed;
+            this.rememberPasswd = temp1.rememberPasswd;
+            this.rememberUsername = temp1.rememberUsername;
+            this.username = temp1.username;
+
+        }
+        public Config()
+        {
+            this.rememberUsername = "0";
+            this.rememberPasswd = "0";
+            this.passwd = "";
+            this.username = "";
+            this.noticed = "0";
+        }
+        public void SaveConfig()
+        {
+            TempConfig temp1 = new TempConfig();
+            temp1.passwd = this.passwd;
+            temp1.noticed = this.noticed;
+            temp1.rememberPasswd = this.rememberPasswd;
+            temp1.rememberUsername = this.rememberUsername;
+            temp1.username = this.username;
+            string configJson = JsonConvert.SerializeObject(temp1);
+            using (StreamWriter sw = File.CreateText(this.ConfigFile))
+            {
+                sw.WriteLine(configJson);
+                sw.Close();
+            }
+        }
+        ~Config()
+        {
+            //保存配置文件等等善后操作
+            TempConfig temp1 = new TempConfig();
+            temp1.passwd = this.passwd;
+            temp1.noticed = this.noticed;
+            temp1.rememberPasswd = this.rememberPasswd;
+            temp1.rememberUsername = this.rememberUsername;
+            temp1.username = this.username;
+            string configJson = JsonConvert.SerializeObject(temp1);
+            using (StreamWriter sw = File.CreateText(this.ConfigFile))
+            {
+                sw.WriteLine(configJson);
+                sw.Close();
+            }
         }
 
+    }
+    class TempConfig
+    {
+        public string rememberUsername = "";
+        public string rememberPasswd = "";
+        public string username = "";
+        public string passwd = "";
+        public string noticed = "";
     }
 }
