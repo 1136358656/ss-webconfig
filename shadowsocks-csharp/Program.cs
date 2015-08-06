@@ -13,7 +13,8 @@ using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Globalization;
 using System.Runtime.InteropServices;
-
+using Microsoft.Win32;
+using System.Runtime.InteropServices;
 
 
 
@@ -32,11 +33,24 @@ namespace Shadowsocks
         /// 应用程序的主入口点。
         /// </summary>
         //[STAThread]
+        
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern int SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int y, int Width, int Height, int flags);
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern System.IntPtr GetForegroundWindow();
-       
+        [DllImport(@"wininet",
+        SetLastError = true,
+        CharSet = CharSet.Auto,
+        EntryPoint = "InternetSetOption",
+        CallingConvention = CallingConvention.StdCall)]
+
+        public static extern bool InternetSetOption
+        (
+        int hInternet,
+        int dmOption,
+        IntPtr lpBuffer,
+        int dwBufferLength
+        );
 
         public static string ServerIP = "0.0.0.0";
         public static int Port = 0000;
@@ -102,8 +116,15 @@ namespace Shadowsocks
             catch
             {
             }
-            //MessageBox.Show(macAddress);
-            //System.Net.WebException
+            //此处向下开始在关闭时关闭IE代理设置，以免下次启动失败
+            RegistryKey regKey = Registry.CurrentUser;
+            string SubKeyPath = "Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings";
+            RegistryKey optionKey = regKey.OpenSubKey(SubKeyPath, true);
+            optionKey.SetValue("ProxyEnable", 0);
+            optionKey.SetValue("ProxyServer", "");
+            InternetSetOption(0, 39, IntPtr.Zero, 0); //激活代理设置
+            InternetSetOption(0, 37, IntPtr.Zero, 0);
+            //此处向上在关闭时关闭IE代理设置，以免下次启动失败
             string infoUrl = "https://fuckgfw.yanlei.me/userlog.php?mac=" +macAddress+ "&version="+version;
             WebClient info = new WebClient();
             info.Credentials = CredentialCache.DefaultCredentials;

@@ -33,9 +33,7 @@ namespace Shadowsocks.View
             
             if (User.UserConfig.noticed == "0")
             {
-                Form notice = new Notice();
-                notice.ShowDialog();
-                User.UserConfig.noticed = "1";
+                
             }
             if (User.UserConfig.rememberUsername == "0")
             {
@@ -63,7 +61,8 @@ namespace Shadowsocks.View
 
         private void button2_Click(object sender, EventArgs e)
         {
-
+            FormInputDlg InputDlg = new FormInputDlg();
+            InputDlg.ShowDialog();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -181,6 +180,12 @@ namespace Shadowsocks.View
         private void passwd_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            FormChangePasswdDlg ChangePasswdDlg = new FormChangePasswdDlg();
+            ChangePasswdDlg.ShowDialog();
         }
     }
     

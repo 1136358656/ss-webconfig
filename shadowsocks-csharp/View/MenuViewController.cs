@@ -314,7 +314,7 @@ namespace Shadowsocks.View
             RegistryKey regKey = Registry.CurrentUser;
             string SubKeyPath = "Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings";
             RegistryKey optionKey = regKey.OpenSubKey(SubKeyPath, true);
-            optionKey.SetValue("ProxyEnable", 1);
+            optionKey.SetValue("ProxyEnable", 0);
             optionKey.SetValue("ProxyServer", "");
             InternetSetOption(0, 39, IntPtr.Zero, 0); //激活代理设置
             InternetSetOption(0, 37, IntPtr.Zero, 0);
