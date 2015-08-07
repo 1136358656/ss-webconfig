@@ -58,7 +58,7 @@ namespace Shadowsocks
         public static string method = "test";
         public static string remarks="";
         public   static int statusCode = 0;
-        public static string version = "0.9.7";
+        public static string version = "1.0.0";
         public static string macAddress = "";
         public int start()
         {
@@ -213,7 +213,7 @@ namespace Shadowsocks
                 FormLogin login = new FormLogin();
                 login.Show();
                 SetWindowPos(GetForegroundWindow(), -1, 0, 0, 0, 0, 1 | 2);
-               
+                
                 
                 
                 

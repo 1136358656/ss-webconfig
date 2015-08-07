@@ -32,12 +32,12 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.username = new System.Windows.Forms.TextBox();
+            this.oldpasswd = new System.Windows.Forms.TextBox();
+            this.newpasswd = new System.Windows.Forms.TextBox();
+            this.confirmnewpasswd = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -76,49 +76,39 @@
             this.label4.TabIndex = 3;
             this.label4.Text = "确认新密码";
             // 
-            // textBox1
+            // username
             // 
-            this.textBox1.Location = new System.Drawing.Point(91, 6);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(188, 25);
-            this.textBox1.TabIndex = 4;
+            this.username.Location = new System.Drawing.Point(91, 6);
+            this.username.Name = "username";
+            this.username.Size = new System.Drawing.Size(188, 25);
+            this.username.TabIndex = 4;
             // 
-            // textBox2
+            // oldpasswd
             // 
-            this.textBox2.Location = new System.Drawing.Point(91, 35);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.PasswordChar = '●';
-            this.textBox2.Size = new System.Drawing.Size(188, 25);
-            this.textBox2.TabIndex = 5;
-            this.textBox2.UseSystemPasswordChar = true;
+            this.oldpasswd.Location = new System.Drawing.Point(91, 35);
+            this.oldpasswd.Name = "oldpasswd";
+            this.oldpasswd.PasswordChar = '●';
+            this.oldpasswd.Size = new System.Drawing.Size(188, 25);
+            this.oldpasswd.TabIndex = 5;
+            this.oldpasswd.UseSystemPasswordChar = true;
             // 
-            // textBox3
+            // newpasswd
             // 
-            this.textBox3.Location = new System.Drawing.Point(91, 64);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.PasswordChar = '●';
-            this.textBox3.Size = new System.Drawing.Size(188, 25);
-            this.textBox3.TabIndex = 6;
-            this.textBox3.UseSystemPasswordChar = true;
+            this.newpasswd.Location = new System.Drawing.Point(91, 64);
+            this.newpasswd.Name = "newpasswd";
+            this.newpasswd.PasswordChar = '●';
+            this.newpasswd.Size = new System.Drawing.Size(188, 25);
+            this.newpasswd.TabIndex = 6;
+            this.newpasswd.UseSystemPasswordChar = true;
             // 
-            // textBox4
+            // confirmnewpasswd
             // 
-            this.textBox4.Location = new System.Drawing.Point(90, 93);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.PasswordChar = '●';
-            this.textBox4.Size = new System.Drawing.Size(188, 25);
-            this.textBox4.TabIndex = 7;
-            this.textBox4.UseSystemPasswordChar = true;
-            // 
-            // button1
-            // 
-            this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button1.Location = new System.Drawing.Point(155, 127);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(113, 35);
-            this.button1.TabIndex = 8;
-            this.button1.Text = "确定";
-            this.button1.UseVisualStyleBackColor = true;
+            this.confirmnewpasswd.Location = new System.Drawing.Point(90, 93);
+            this.confirmnewpasswd.Name = "confirmnewpasswd";
+            this.confirmnewpasswd.PasswordChar = '●';
+            this.confirmnewpasswd.Size = new System.Drawing.Size(188, 25);
+            this.confirmnewpasswd.TabIndex = 7;
+            this.confirmnewpasswd.UseSystemPasswordChar = true;
             // 
             // button2
             // 
@@ -131,19 +121,28 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(155, 127);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(113, 35);
+            this.button3.TabIndex = 10;
+            this.button3.Text = "确定";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // FormChangePasswdDlg
             // 
-            this.AcceptButton = this.button1;
+            this.AcceptButton = this.button3;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.button2;
-            this.ClientSize = new System.Drawing.Size(294, 169);
+            this.ClientSize = new System.Drawing.Size(292, 169);
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox4);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.confirmnewpasswd);
+            this.Controls.Add(this.newpasswd);
+            this.Controls.Add(this.oldpasswd);
+            this.Controls.Add(this.username);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -169,11 +168,11 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox username;
+        private System.Windows.Forms.TextBox oldpasswd;
+        private System.Windows.Forms.TextBox newpasswd;
+        private System.Windows.Forms.TextBox confirmnewpasswd;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
     }
 }
